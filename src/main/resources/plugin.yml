@@ -1,0 +1,5 @@
+main: com.ruinscraft.plotborder.PlotBorder
+name: ${name}
+version: ${project.version}
+commands:
+  pborder:
