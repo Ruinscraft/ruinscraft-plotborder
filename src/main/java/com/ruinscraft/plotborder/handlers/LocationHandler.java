@@ -14,8 +14,8 @@ import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.util.MathMan;
 import com.ruinscraft.plotborder.Direction;
 import com.ruinscraft.plotborder.PlotBorder;
-import com.ruinscraft.plotborder.objects.BorderPlayer;
-import com.ruinscraft.plotborder.objects.WallDirec;
+import com.ruinscraft.plotborder.model.BorderPlayer;
+import com.ruinscraft.plotborder.model.WallDirec;
 
 public class LocationHandler {
 	
@@ -29,13 +29,13 @@ public class LocationHandler {
 		players = new ArrayList<BorderPlayer>();
 	}
 	
-	// gets PlotSquared location from Bukkit location
+	// Get com.intellectualcrafters.plot.object.Location from org.bukkit.Location
 	public com.intellectualcrafters.plot.object.Location getLocation(Location location) {
 		return new com.intellectualcrafters.plot.object.Location(world.getName(), 
 				MathMan.roundInt(location.getX()), MathMan.roundInt(location.getY()), MathMan.roundInt(location.getZ()));
 	}
 	
-	// vice versa
+	// Get org.bukkit.Location from com.intellectualcrafters.plot.object.Location
 	public Location getLocation(com.intellectualcrafters.plot.object.Location location) {
 		return new Location(world, location.getX(), location.getY(), location.getZ());
 	}

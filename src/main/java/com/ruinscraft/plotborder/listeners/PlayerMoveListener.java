@@ -9,29 +9,29 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import com.intellectualcrafters.plot.object.Plot;
 import com.ruinscraft.plotborder.PlotBorder;
 import com.ruinscraft.plotborder.handlers.LocationHandler;
-import com.ruinscraft.plotborder.objects.BorderPlayer;
+import com.ruinscraft.plotborder.model.BorderPlayer;
 
 public class PlayerMoveListener implements Listener {
-
-	final private LocationHandler handler = PlotBorder.getLocHandler();
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMove(PlayerMoveEvent event) {
 		
-		Plot plot = Plot.getPlot(handler.getLocation(event.getTo()));
+		final LocationHandler locationHandler = PlotBorder.getInstance().getLocationHandler();
+		
+		Plot plot = Plot.getPlot(locationHandler.getLocation(event.getTo()));
 		Player player = event.getPlayer();
-		BorderPlayer bplayer;
+		BorderPlayer borderPlayer = null;
 		
-		bplayer = handler.getCurrentPlayer(player);
+		borderPlayer = locationHandler.getCurrentPlayer(player);
 		
-		if (bplayer == null || plot == null) {
+		if (borderPlayer == null || plot == null) {
 			return;
 		}
 		
-		bplayer.setLocation(event.getTo());
+		borderPlayer.setLocation(event.getTo());
 		
-		if (!(plot.getId() == bplayer.getPlot().getId())) {
-			bplayer.clearPlotWalls();
+		if (!(plot.getId() == borderPlayer.getPlot().getId())) {
+			borderPlayer.clearPlotWalls();
 			// clear stuff
 			// do all the things
 		}

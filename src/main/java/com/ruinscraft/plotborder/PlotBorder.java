@@ -1,5 +1,6 @@
 package com.ruinscraft.plotborder;
 
+import org.bukkit.Particle;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ruinscraft.plotborder.commands.BorderCommand;
@@ -8,21 +9,17 @@ import com.ruinscraft.plotborder.listeners.PlayerMoveListener;
 
 public class PlotBorder extends JavaPlugin {
 	
+	public static final Particle PARTICLE = Particle.HEART;
+	
 	private static PlotBorder instance;
-	private static LocationHandler lhandler;
-	
-	public static PlotBorder getInstance() {
-		return instance;
-	}
-	
-	public static LocationHandler getLocHandler() {
-		return lhandler;
-	}
+
+	private LocationHandler locationHandler;
 	
 	public void onEnable() {
 		
 		instance = this;
-		lhandler = new LocationHandler();
+		
+		locationHandler = new LocationHandler();
 		
 		this.getCommand("pborder").setExecutor(new BorderCommand());
 		
@@ -30,6 +27,14 @@ public class PlotBorder extends JavaPlugin {
 		
 	}
 	
+	public static PlotBorder getInstance() {
+		return instance;
+	}
+	
+	public LocationHandler getLocationHandler() {
+		return locationHandler;
+	}
+
 	public void onDisable() {
 		instance = null;
 	}
