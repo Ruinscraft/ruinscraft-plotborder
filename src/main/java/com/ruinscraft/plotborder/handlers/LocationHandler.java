@@ -1,4 +1,4 @@
-package com.ruinscraft.plotborder;
+package com.ruinscraft.plotborder.handlers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +12,10 @@ import org.bukkit.entity.Player;
 
 import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.util.MathMan;
+import com.ruinscraft.plotborder.Direction;
+import com.ruinscraft.plotborder.PlotBorder;
+import com.ruinscraft.plotborder.objects.CurrentPlayer;
+import com.ruinscraft.plotborder.objects.WallDirec;
 
 public class LocationHandler {
 	
@@ -47,15 +51,10 @@ public class LocationHandler {
 			i++;
 			
 			if (i == (plot.getAllCorners().size() - 1)) {
-				instance.getLogger().info("Yep");
 				nextCorner = plot.getAllCorners().get(0);
 			} else {
-				instance.getLogger().info("Ugh");
 				nextCorner = plot.getAllCorners().get(i + 1);
 			}
-			
-			cplayer.sendMessage(String.valueOf(corner.getX()) + " " + String.valueOf(corner.getZ()));
-			cplayer.sendMessage(String.valueOf(nextCorner.getX()) + " " + String.valueOf(nextCorner.getZ()));
 			
 			Direction direc = getDirec(corner, nextCorner);
 			
@@ -67,7 +66,6 @@ public class LocationHandler {
 				
 				com.intellectualcrafters.plot.object.Location change = new com.intellectualcrafters.plot.object.Location(
 						corner.getWorld(), corner.getX(), y, corner.getZ());
-				instance.getLogger().info("NEW Change !!!1");
 				
 				int d = 0;
 				while (d <= plot.getLargestRegion().maxX || d <= plot.getLargestRegion().maxZ) {

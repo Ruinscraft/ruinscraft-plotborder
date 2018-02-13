@@ -1,4 +1,4 @@
-package com.ruinscraft.plotborder;
+package com.ruinscraft.plotborder.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,6 +7,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.intellectualcrafters.plot.object.Plot;
+import com.ruinscraft.plotborder.PlotBorder;
+import com.ruinscraft.plotborder.handlers.LocationHandler;
+import com.ruinscraft.plotborder.objects.CurrentPlayer;
 
 public class MoveListener implements Listener {
 

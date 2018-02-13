@@ -7,6 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
+import com.ruinscraft.plotborder.handlers.LocationHandler;
+import com.ruinscraft.plotborder.objects.CurrentPlayer;
+
 public class ParticleRunnable implements Runnable {
 	
 	private LocationHandler handler = PlotBorder.getLocHandler();

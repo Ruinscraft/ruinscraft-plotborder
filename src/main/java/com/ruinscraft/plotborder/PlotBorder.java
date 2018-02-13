@@ -2,6 +2,10 @@ package com.ruinscraft.plotborder;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.ruinscraft.plotborder.commands.BorderCommand;
+import com.ruinscraft.plotborder.handlers.LocationHandler;
+import com.ruinscraft.plotborder.listeners.MoveListener;
+
 public class PlotBorder extends JavaPlugin {
 	
 	private static PlotBorder instance;

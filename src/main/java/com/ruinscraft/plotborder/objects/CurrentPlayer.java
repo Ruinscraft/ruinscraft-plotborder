@@ -1,4 +1,4 @@
-package com.ruinscraft.plotborder;
+package com.ruinscraft.plotborder.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.intellectualcrafters.plot.object.Plot;
+import com.ruinscraft.plotborder.PlotBorder;
+import com.ruinscraft.plotborder.handlers.LocationHandler;
 
 public class CurrentPlayer {
 

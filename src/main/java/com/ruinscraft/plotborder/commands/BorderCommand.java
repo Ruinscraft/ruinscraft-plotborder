@@ -1,4 +1,4 @@
-package com.ruinscraft.plotborder;
+package com.ruinscraft.plotborder.commands;
 
 import java.util.Map;
 
@@ -9,6 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.intellectualcrafters.plot.object.Plot;
+import com.ruinscraft.plotborder.ParticleRunnable;
+import com.ruinscraft.plotborder.PlotBorder;
+import com.ruinscraft.plotborder.handlers.LocationHandler;
+import com.ruinscraft.plotborder.objects.CurrentPlayer;
 
 public class BorderCommand implements CommandExecutor {
 	
@@ -34,14 +38,8 @@ public class BorderCommand implements CommandExecutor {
 			handler.addCurrentPlayer(cplayer);
 		} else { cplayer = handler.getCurrentPlayer(player); }
 		
-		player.sendMessage(String.valueOf(plot.getAllCorners().size()));
-		
 		Map<Double, Location> locations = handler.enableWalls(cplayer);
 		cplayer.setParticles(locations);
-		
-		for (Location loc : locations.values()) {
-			instance.getLogger().info("Yes");
-		}
 		
 		ParticleRunnable run = new ParticleRunnable(cplayer);
 		Thread thread = new Thread(run);

@@ -1,11 +1,15 @@
-package com.ruinscraft.plotborder;
+package com.ruinscraft.plotborder.objects;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
 
+import com.ruinscraft.plotborder.Direction;
+
 public class WallDirec {
+	
+	// delet
 	
 	private Location corner;
 	private Location corner2;
