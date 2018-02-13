@@ -32,6 +32,10 @@ public class ParticleRunnable implements Runnable {
 			
 			for (Double key : locations.keySet()) {
 				
+				// todo: check to see if within 20 blocks first
+				// make the tiny value below bigger based off of player proximity to the particle
+				// so then the particles will get stronger the closer u are to the border
+				
 				// get tiny amount of points to display per a random amount of millis
 				if ((key - rand) < .002 && (key - rand) > 0) {
 					
