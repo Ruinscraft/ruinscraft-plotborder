@@ -12,7 +12,7 @@ import com.intellectualcrafters.plot.object.Plot;
 import com.ruinscraft.plotborder.PlotBorder;
 import com.ruinscraft.plotborder.handlers.LocationHandler;
 
-public class CurrentPlayer {
+public class BorderPlayer {
 
 	LocationHandler handler = PlotBorder.getLocHandler();
 
@@ -22,7 +22,7 @@ public class CurrentPlayer {
 	private List<WallDirec> walls;
 	private Map<Double, Location> particles;
 
-	public CurrentPlayer(Player player, Plot plot, Location location) {
+	public BorderPlayer(Player player, Plot plot, Location location) {
 		this.player = player;
 		this.plot = plot;
 		this.location = location;
@@ -85,8 +85,9 @@ public class CurrentPlayer {
 		return null;
 	}
 
+	// useless
 	public void enablePlotWalls() {
-		handler.enableWalls(this);
+		handler.getBorderPoints(this);
 	}
 
 	public void clearPlotWalls() {

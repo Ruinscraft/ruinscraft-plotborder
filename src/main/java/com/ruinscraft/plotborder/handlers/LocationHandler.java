@@ -14,7 +14,7 @@ import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.util.MathMan;
 import com.ruinscraft.plotborder.Direction;
 import com.ruinscraft.plotborder.PlotBorder;
-import com.ruinscraft.plotborder.objects.CurrentPlayer;
+import com.ruinscraft.plotborder.objects.BorderPlayer;
 import com.ruinscraft.plotborder.objects.WallDirec;
 
 public class LocationHandler {
@@ -23,25 +23,28 @@ public class LocationHandler {
 	final private World world = instance.getServer().getWorlds().get(0);
 	final Particle particle = Particle.HEART;
 	
-	private List<CurrentPlayer> players;
+	private List<BorderPlayer> players;
 	
 	public LocationHandler() {
-		players = new ArrayList<CurrentPlayer>();
+		players = new ArrayList<BorderPlayer>();
 	}
 	
-	// Gets PlotSquared location
+	// gets PlotSquared location from Bukkit location
 	public com.intellectualcrafters.plot.object.Location getLocation(Location location) {
 		return new com.intellectualcrafters.plot.object.Location(world.getName(), 
 				MathMan.roundInt(location.getX()), MathMan.roundInt(location.getY()), MathMan.roundInt(location.getZ()));
 	}
 	
+	// vice versa
 	public Location getLocation(com.intellectualcrafters.plot.object.Location location) {
 		return new Location(world, location.getX(), location.getY(), location.getZ());
 	}
 	
-	public Map<Double, Location> enableWalls(CurrentPlayer cplayer) {
+	// collect all points on da wall for plot, save a random num with it
+	// prob should reverse key/value but it works
+	public Map<Double, Location> getBorderPoints(BorderPlayer bplayer) {
 		
-		Plot plot = cplayer.getPlot();
+		Plot plot = bplayer.getPlot();
 		
 		int i = -1;
 		Map<Double, Location> locs = new HashMap<Double, Location>();
@@ -59,7 +62,7 @@ public class LocationHandler {
 			Direction direc = getDirec(corner, nextCorner);
 			
 			WallDirec wall = new WallDirec(getLocation(corner), getLocation(nextCorner), direc);
-			cplayer.addPlotWall(wall);
+			bplayer.addPlotWall(wall);
 			
 			int y;
 			for (y = 0; y <= 254; y++) {
@@ -87,6 +90,7 @@ public class LocationHandler {
 		
 	}
 	
+	// gets direction between two consecutive corners of plot
 	public Direction getDirec(com.intellectualcrafters.plot.object.Location cornerOne, 
 							  	com.intellectualcrafters.plot.object.Location cornerTwo) {
 		
@@ -121,6 +125,7 @@ public class LocationHandler {
 		
 	}
 	
+	// move over a coord to add another point to da wall, etc
 	public com.intellectualcrafters.plot.object.Location addCoord(Direction direc, com.intellectualcrafters.plot.object.Location change, 
 		  										com.intellectualcrafters.plot.object.Location cornerTwo) {
 		
@@ -168,16 +173,16 @@ public class LocationHandler {
 		
 	}
 	
-	public CurrentPlayer getCurrentPlayer(Player player) {
-		for (CurrentPlayer cplayer : players) {
-			if (cplayer.getPlayer() == player) {
-				return cplayer;
+	public BorderPlayer getCurrentPlayer(Player player) {
+		for (BorderPlayer bplayer : players) {
+			if (bplayer.getPlayer() == player) {
+				return bplayer;
 			}
 		}
 		return null;
 	}
 	
-	public void addCurrentPlayer(CurrentPlayer player) {
+	public void addCurrentPlayer(BorderPlayer player) {
 		players.add(player);
 	}
 	

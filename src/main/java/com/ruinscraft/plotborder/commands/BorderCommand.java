@@ -12,7 +12,7 @@ import com.intellectualcrafters.plot.object.Plot;
 import com.ruinscraft.plotborder.ParticleRunnable;
 import com.ruinscraft.plotborder.PlotBorder;
 import com.ruinscraft.plotborder.handlers.LocationHandler;
-import com.ruinscraft.plotborder.objects.CurrentPlayer;
+import com.ruinscraft.plotborder.objects.BorderPlayer;
 
 public class BorderCommand implements CommandExecutor {
 	
@@ -26,22 +26,25 @@ public class BorderCommand implements CommandExecutor {
 		}
 		
 		Player player = (Player) sender;
-		CurrentPlayer cplayer;
+		BorderPlayer bplayer;
 		
 		Location location = player.getLocation();
 		com.intellectualcrafters.plot.object.Location plocation = handler.getLocation(location);
 		
 		Plot plot = Plot.getPlot(plocation);
 		
+		// create bplayer if not already here
 		if (handler.getCurrentPlayer(player) == null) {
-			cplayer = new CurrentPlayer(player, plot, location);
-			handler.addCurrentPlayer(cplayer);
-		} else { cplayer = handler.getCurrentPlayer(player); }
+			bplayer = new BorderPlayer(player, plot, location);
+			handler.addCurrentPlayer(bplayer);
+		} else { bplayer = handler.getCurrentPlayer(player); }
 		
-		Map<Double, Location> locations = handler.enableWalls(cplayer);
-		cplayer.setParticles(locations);
+		// new list of points for the plot border
+		Map<Double, Location> locations = handler.getBorderPoints(bplayer);
+		bplayer.setParticles(locations);
 		
-		ParticleRunnable run = new ParticleRunnable(cplayer);
+		// start dat
+		ParticleRunnable run = new ParticleRunnable(bplayer);
 		Thread thread = new Thread(run);
 		thread.start();
 		

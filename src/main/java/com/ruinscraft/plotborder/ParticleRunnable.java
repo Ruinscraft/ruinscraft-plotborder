@@ -8,45 +8,49 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import com.ruinscraft.plotborder.handlers.LocationHandler;
-import com.ruinscraft.plotborder.objects.CurrentPlayer;
+import com.ruinscraft.plotborder.objects.BorderPlayer;
 
 public class ParticleRunnable implements Runnable {
 	
 	private LocationHandler handler = PlotBorder.getLocHandler();
 	
-	private final CurrentPlayer cplayer;
+	private final BorderPlayer bplayer;
 	private final Particle particle = Particle.HEART;
 	
 	
-	public ParticleRunnable(CurrentPlayer cplayer) {
-		this.cplayer = cplayer;
+	public ParticleRunnable(BorderPlayer bplayer) {
+		this.bplayer = bplayer;
 	}
 	
 	public void run() {
 		
-		Map<Double, Location> locations = cplayer.getParticles();
+		Map<Double, Location> locations = bplayer.getParticles();
 		
-		while (handler.getLocation((Location) locations.values().toArray()[0]).getPlot().getId() == cplayer.getPlot().getId()) {
+		while (handler.getLocation((Location) locations.values().toArray()[0]).getPlot().getId() == bplayer.getPlot().getId()) {
 			
 			double rand = Math.random();
 			
 			for (Double key : locations.keySet()) {
 				
+				// get tiny amount of points to display per a random amount of millis
 				if ((key - rand) < .002 && (key - rand) > 0) {
 					
 					Location location = locations.get(key);
-					CurrentPlayer cplayer = this.cplayer;
-					if (location.distance(cplayer.getLocation()) >= 20) {
+					BorderPlayer bplayer = this.bplayer;
+					if (location.distance(bplayer.getLocation()) >= 20) {
 						continue;
 					}
 					Location nloc = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-					Player player = cplayer.getPlayer();
-					Direction direc = cplayer.getWall(location).getDirection();
+					Player player = bplayer.getPlayer();
+					Direction direc = bplayer.getWall(location).getDirection();
 					
 					if (location.getBlock().getType() == Material.AIR) {
+						
+						// diff amounts of randomness so they look like walls from diff directions
 						double random = (Math.random() - .5) / 2; // direc
 						double randomTwo = (Math.random() - .5) / 4; // non-direc
 						double randomThree = (Math.random() - .5) / 2; // y
+						// add a lil bit to x/z so it looks like its in the correct spot
 						if (direc == Direction.NORTH) {
 							player.spawnParticle(particle, nloc.add(randomTwo + 1, randomThree, random), 1);
 						} else if (direc == Direction.SOUTH) {
