@@ -8,15 +8,23 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.intellectualcrafters.plot.object.Plot;
+import com.intellectualcrafters.plot.util.MathMan;
 
 public class PlotBorderUtil {
 
-	private static final PlotBorder instance = PlotBorder.getInstance();
-	private static final World world = instance.getServer().getWorlds().get(0);
+	// Get com.intellectualcrafters.plot.object.Location from org.bukkit.Location
+	public static com.intellectualcrafters.plot.object.Location getLocation(Location location) {
+		return new com.intellectualcrafters.plot.object.Location(location.getWorld().getName(), 
+				MathMan.roundInt(location.getX()), MathMan.roundInt(location.getY()), MathMan.roundInt(location.getZ()));
+	}
+	
+	// Get org.bukkit.Location from com.intellectualcrafters.plot.object.Location
+	public static Location getLocation(com.intellectualcrafters.plot.object.Location location) {
+		return new Location(Bukkit.getWorld(location.getWorld()), location.getX(), location.getY(), location.getZ());
+	}
 
 	public static void spawnPoints(List<UUID> players) {
 
@@ -24,7 +32,6 @@ public class PlotBorderUtil {
 
 			Player player = Bukkit.getPlayer(uuid);
 			if (player == null) {
-				PlotBorder.getInstance().getLogger().info("NOPE Haha !");
 				PlotBorder.getActivePlayers().remove(uuid);
 				continue;
 			}
@@ -66,11 +73,11 @@ public class PlotBorderUtil {
 	public static List<Location> getPlotBorderPoints(Player player) {
 
 		Location location = player.getLocation();
-		Plot plot = PlotBorder.getLocation(location).getPlot();
-		List<Location> locs = new ArrayList<Location>();
+		Plot plot = getLocation(location).getPlot();
+		List<Location> locations = new ArrayList<Location>();
 
 		if (plot == null) {
-			return locs;
+			return locations;
 		}
 
 		int i = -1;
@@ -89,9 +96,8 @@ public class PlotBorderUtil {
 				nextCorner = plot.getAllCorners().get(i + 1);
 			}
 
-			Direction direc = getPlotBorderDirec(corner, nextCorner);
-			if (direc == null) {
-				instance.getLogger().info("Hahahaha !");
+			Direction direction = getPlotWallDirection(corner, nextCorner);
+			if (direction == null) {
 			}
 
 			for (int y = location.getBlockY() - 19; y <= location.getBlockY() + 19; y++) {
@@ -99,63 +105,63 @@ public class PlotBorderUtil {
 				com.intellectualcrafters.plot.object.Location change = new com.intellectualcrafters.plot.object.Location(
 						corner.getWorld(), corner.getX(), y, corner.getZ());
 
-				int ii;
-				for (ii = plot.getConnectedPlots().size() * 50; ii > 0; ii--) {
+				int j;
+				for (j = plot.getConnectedPlots().size() * 50; j > 0; j--) {
 					if (change == null) {
 						break;
 					}
-					locs.add(PlotBorder.getLocation(change));
-					change = addPlotCoord(direc, change, nextCorner);
+					locations.add(getLocation(change));
+					change = addPlotCoord(direction, change, nextCorner);
 				}
 
 			}
 
 		}
 
-		return locs;
+		return locations;
 
 	}
 
 	// gets direction between two consecutive corners of plot
-	public static Direction getPlotBorderDirec(com.intellectualcrafters.plot.object.Location cornerOne, 
+	public static Direction getPlotWallDirection(com.intellectualcrafters.plot.object.Location cornerOne, 
 			com.intellectualcrafters.plot.object.Location cornerTwo) {
 
-		Direction direc;
+		Direction direction;
 
 		if (cornerOne.getX() == cornerTwo.getX()) {
 
 			int x = cornerOne.getX();
 			com.intellectualcrafters.plot.object.Location half = new com.intellectualcrafters.plot.object.Location(
-					world.getName(), x, 1, ((cornerOne.getZ() + cornerTwo.getZ()) / 2));
+					cornerOne.getWorld(), x, 1, ((cornerOne.getZ() + cornerTwo.getZ()) / 2));
 			if ((half.add(1, 0, 0)).getPlot() == null) {
-				direc = Direction.NORTH;
+				direction = Direction.NORTH;
 			} else {
-				direc = Direction.SOUTH;
+				direction = Direction.SOUTH;
 			}
 
 		} else if (cornerOne.getZ() == cornerTwo.getZ()) {
 			int z = cornerOne.getZ();
 			com.intellectualcrafters.plot.object.Location half = new com.intellectualcrafters.plot.object.Location(
-					world.getName(), ((cornerOne.getX() + cornerTwo.getX()) / 2), 1, z);
+					cornerOne.getWorld(), ((cornerOne.getX() + cornerTwo.getX()) / 2), 1, z);
 			if ((half.add(0, 0, 1)).getPlot() == null) {
-				direc = Direction.EAST;
+				direction = Direction.EAST;
 			} else {
-				direc = Direction.WEST;
+				direction = Direction.WEST;
 			}
 
 		} else {
 			return null;
 		}
 
-		return direc;
+		return direction;
 
 	}
 
 	// something here
-	public static com.intellectualcrafters.plot.object.Location addPlotCoord(Direction direc, com.intellectualcrafters.plot.object.Location change, 
+	public static com.intellectualcrafters.plot.object.Location addPlotCoord(Direction direction, com.intellectualcrafters.plot.object.Location change, 
 			com.intellectualcrafters.plot.object.Location cornerTwo) {
 
-		switch (direc) {
+		switch (direction) {
 		case NORTH:
 			if (change.getZ() == cornerTwo.getZ()) {
 				return null;
