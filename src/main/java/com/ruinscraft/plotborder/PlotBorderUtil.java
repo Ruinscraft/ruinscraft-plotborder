@@ -26,6 +26,7 @@ public class PlotBorderUtil {
 		return new Location(Bukkit.getWorld(location.getWorld()), location.getX(), location.getY(), location.getZ());
 	}
 
+	// spawns particles randomly for the player
 	public static void spawnPoints(List<UUID> players) {
 
 		for (UUID uuid : players) {
@@ -37,7 +38,6 @@ public class PlotBorderUtil {
 			}
 
 			List<Location> locations = PlotBorderUtil.getPlotBorderPoints(player);
-			
 			Location playerLocation = Bukkit.getPlayer(uuid).getLocation();
 
 			for (Location location : locations) {
@@ -48,18 +48,12 @@ public class PlotBorderUtil {
 				}
 
 				double distance = location.distance(playerLocation);
-				Random random = new Random();
-				double chance = (.1 * (distance * distance * distance)) + 1;
 
-				if (random.nextInt((int) chance) == 1) {
-
-					Location nloc = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
+				if (new Random().nextInt((int) (.1 * (distance * distance * distance)) + 1) == 1) {
 
 					if (location.getBlock().getType() == Material.AIR) {
-
-						// PlotBorder.getInstance().getLogger().info("AAAAA " + String.valueOf(nloc.getX()) + String.valueOf(nloc.getY()) + String.valueOf(nloc.getZ()));
-						player.spawnParticle(PlotBorder.PARTICLE, nloc.add((Math.random() - .5) / 3, (Math.random() - .5), (Math.random() - .5) / 3), 1);
-
+						player.spawnParticle(PlotBorder.PARTICLE, new Location(
+								location.getWorld(), location.getX(), location.getY(), location.getZ()), 1);
 					}
 
 				}
@@ -70,6 +64,7 @@ public class PlotBorderUtil {
 
 	}
 
+	// gets all locations/points where particles will have a chance to be spawned
 	public static List<Location> getPlotBorderPoints(Player player) {
 
 		Location location = player.getLocation();
@@ -82,7 +77,9 @@ public class PlotBorderUtil {
 
 		int i = -1;
 		for (final com.intellectualcrafters.plot.object.Location corner : plot.getAllCorners()) {
+			
 			i++;
+			
 			if (!((corner.getX() - location.getX()) < 25 && (corner.getX() - location.getX()) > -25)
 					&& !((corner.getZ() - location.getZ()) < 25 && (corner.getZ() - location.getZ()) > -25)) {
 				continue;
@@ -97,21 +94,19 @@ public class PlotBorderUtil {
 			}
 
 			Direction direction = getPlotWallDirection(corner, nextCorner);
-			if (direction == null) {
-			}
 
 			for (int y = location.getBlockY() - 19; y <= location.getBlockY() + 19; y++) {
 
 				com.intellectualcrafters.plot.object.Location change = new com.intellectualcrafters.plot.object.Location(
 						corner.getWorld(), corner.getX(), y, corner.getZ());
 
-				int j;
-				for (j = plot.getConnectedPlots().size() * 50; j > 0; j--) {
+				for (int j = plot.getConnectedPlots().size() * 50; j > 0; j--) {
+					change = addPlotCoord(direction, change, nextCorner);
 					if (change == null) {
 						break;
 					}
-					locations.add(getLocation(change));
-					change = addPlotCoord(direction, change, nextCorner);
+					locations.add(adjustLocation(new com.intellectualcrafters.plot.object.Location(
+							change.getWorld(), change.getX(), change.getY(), change.getZ()), direction));
 				}
 
 			}
@@ -122,7 +117,7 @@ public class PlotBorderUtil {
 
 	}
 
-	// gets direction between two consecutive corners of plot
+	// gets the direction between two consecutive corners of plot ("wall")
 	public static Direction getPlotWallDirection(com.intellectualcrafters.plot.object.Location cornerOne, 
 			com.intellectualcrafters.plot.object.Location cornerTwo) {
 
@@ -157,7 +152,7 @@ public class PlotBorderUtil {
 
 	}
 
-	// something here
+	// adds a coord while collecting points in a plot wall based on the direction of the wall
 	public static com.intellectualcrafters.plot.object.Location addPlotCoord(Direction direction, com.intellectualcrafters.plot.object.Location change, 
 			com.intellectualcrafters.plot.object.Location cornerTwo) {
 
@@ -185,7 +180,6 @@ public class PlotBorderUtil {
 				return null;
 			}
 			change.setZ(cornerTwo.getZ() + 1);
-
 			if (!(change.add(1, 0, 0).getPlot() == null) || (change.add(0, 0, -1).getPlot() == null)) {
 				return null;
 			}
@@ -203,6 +197,24 @@ public class PlotBorderUtil {
 			return null;
 		}
 
+	}
+	
+	// does some minor adjustments to the location to make it look nice
+	public static Location adjustLocation(com.intellectualcrafters.plot.object.Location location, Direction direction) {
+		
+		switch (direction) {
+		case NORTH:
+			return getLocation(location).add(1, (Math.random() - .5) / 2, (Math.random() - .5) / 2);
+		case EAST:
+			return getLocation(location).add((Math.random() - .5) / 2, (Math.random() - .5) / 2, 1);
+		case SOUTH:
+			return getLocation(location).add(0, (Math.random() - .5) / 2, (Math.random() - .5) / 2);
+		case WEST:
+			return getLocation(location).add((Math.random() - .5) / 2, (Math.random() - .5) / 2, 0);
+		default:
+			return getLocation(location);
+		}
+		
 	}
 
 }
